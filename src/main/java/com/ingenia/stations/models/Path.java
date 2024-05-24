@@ -4,16 +4,18 @@ import java.util.UUID;
 
 public class Path {
 
-    private UUID id;
+    private long id;
 
     private Station origin;
 
     private Station destination;
 
+    private double cost;
+
     public Path() {
     }
 
-    public Path(Station origin, Station destination) {
+    public Path(long id, Station origin, Station destination, double cost) {
         this.origin = origin;
         this.destination = destination;
     }
@@ -32,5 +34,21 @@ public class Path {
 
     public void setDestination(Station destination) {
         this.destination = destination;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

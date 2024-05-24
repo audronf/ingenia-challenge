@@ -4,19 +4,19 @@ import java.util.UUID;
 
 public class Station {
 
-    private UUID id;
+    private long id;
 
     private String name;
 
     public Station() {
     }
 
-    public Station(String name) {
-        this.id = UUID.randomUUID();
+    public Station(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
