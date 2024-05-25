@@ -2,6 +2,7 @@ package com.ingenia.stations.utils;
 
 public final class Constants {
 
+    public static final String BASE_URL = "/api/v1/";
     public static final String STATIONS_URL = "stations";
     public static final String PATHS_URL = "paths";
     public static final String STATION_NOT_FOUND = "Station not found";
