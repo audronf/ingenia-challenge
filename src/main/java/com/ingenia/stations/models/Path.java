@@ -1,10 +1,8 @@
 package com.ingenia.stations.models;
 
-import java.util.UUID;
-
 public class Path {
 
-    private long id;
+    private Long id;
 
     private Station origin;
 

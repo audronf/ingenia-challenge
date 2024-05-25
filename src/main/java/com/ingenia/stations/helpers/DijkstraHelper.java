@@ -45,7 +45,6 @@ public class DijkstraHelper {
      * @param graph The graph on which Dijkstra's algorithm will be performed.
      */
     public DijkstraHelper(Graph graph) {
-        // create a copy of the array so that we can operate on this array
         this.nodes = new ArrayList<Station>(graph.getVertexes());
         this.edges = new ArrayList<Path>(graph.getEdges());
         this.totalCost = 0.0;
@@ -56,7 +55,7 @@ public class DijkstraHelper {
      *
      * @param source The source node for finding the shortest paths.
      */
-    public void execute(Station source) {
+    public void execute(Station source, Station target) {
         settledNodes = new HashSet<Station>();
         unSettledNodes = new HashSet<Station>();
         distance = new HashMap<Station, Double>();
@@ -70,7 +69,7 @@ public class DijkstraHelper {
             unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
-        calculateTotalCost();
+        calculateTotalCost(target);
     }
 
     /**
@@ -87,8 +86,8 @@ public class DijkstraHelper {
                 distance.put(target, newDistance);
                 predecessors.put(target, node);
                 if (!isSettled(target)) {
-                    unSettledNodes.remove(target); // Remove previous instance, if any
-                    unSettledNodes.add(target); // Add updated instance
+                    unSettledNodes.remove(target);
+                    unSettledNodes.add(target);
                 }
             }
         }
@@ -173,10 +172,8 @@ public class DijkstraHelper {
         }
     }
 
-    private void calculateTotalCost() {
-        for (Double cost : distance.values()) {
-            totalCost += cost;
-        }
+    private void calculateTotalCost(Station target) {
+        this.totalCost = getShortestDistance(target);
     }
 
     /**
@@ -200,6 +197,11 @@ public class DijkstraHelper {
         return path;
     }
 
+    /**
+     * Retrieves the total cost of the optimal path.
+     *
+     * @return The total cost of the path.
+     */
     public double getTotalCost() {
         return totalCost;
     }

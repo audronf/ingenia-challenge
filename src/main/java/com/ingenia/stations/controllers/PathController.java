@@ -2,6 +2,7 @@ package com.ingenia.stations.controllers;
 
 import com.ingenia.stations.configuration.PathConfiguration;
 import com.ingenia.stations.configuration.StationConfiguration;
+import com.ingenia.stations.dtos.OptimalPathDto;
 import com.ingenia.stations.dtos.PathDto;
 import com.ingenia.stations.helpers.DijkstraHelper;
 import com.ingenia.stations.helpers.Graph;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = Constants.PATHS_URL)
@@ -42,24 +41,24 @@ public class PathController {
     }
 
     @GetMapping("/{sourceId}/{destinationId}")
-    public ResponseEntity<Path> getOptimalPath(@PathVariable Long sourceId, @PathVariable Long destinationId) {
+    public ResponseEntity<OptimalPathDto> getOptimalPath(@PathVariable Long sourceId, @PathVariable Long destinationId) {
         Optional<Station> source = stationConfiguration.findStationById(sourceId);
         Optional<Station> destination = stationConfiguration.findStationById(destinationId);
-
         ArrayList<Station> stations = stationConfiguration.getStations();
         ArrayList<Path> paths = pathConfiguration.getPaths();
 
-        // Test
-        Graph graph = new Graph(stations, paths);
-        DijkstraHelper dijkstra = new DijkstraHelper(graph);
-
-        dijkstra.execute(source.get());
-        LinkedList<Station> res = dijkstra.getPath(destination.get());
-        for (Station station : res) {
-            System.out.println(station.getId());
+        if (source.isPresent() || destination.isPresent()) {
+            Graph graph = new Graph(stations, paths);
+            DijkstraHelper dijkstraHelper = new DijkstraHelper(graph);
+            dijkstraHelper.execute(source.get(), destination.get());
+            LinkedList<Station> optimalPath = dijkstraHelper.getPath(destination.get());
+            Double totalCost = dijkstraHelper.getTotalCost();
+            OptimalPathDto responseBody = new OptimalPathDto(optimalPath.stream().toList(), totalCost);
+            return ResponseEntity.ok(responseBody);
+        } else {
+            return ResponseEntity.badRequest().build();
+            // TODO: error handling
         }
-        System.out.println(dijkstra.getTotalCost());
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping
