@@ -16,8 +16,10 @@ public class Path {
     }
 
     public Path(long id, Station origin, Station destination, double cost) {
+        this.id = id;
         this.origin = origin;
         this.destination = destination;
+        this.cost = cost;
     }
 
     public Station getOrigin() {
