@@ -30,16 +30,18 @@ public class PathController {
 
     @PostMapping
     public ResponseEntity<Path> create(@RequestBody PathDto pathDto) throws StationNotFoundException, InvalidCostException, InvalidPathException {
-        Optional<Station> source = stationConfiguration.findStationById(pathDto.sourceId);
-        Optional<Station> destination = stationConfiguration.findStationById(pathDto.destinationId);
-
         if (pathDto.cost < 0) {
             throw new InvalidCostException(Constants.INVALID_COST);
         }
+
+        if (pathDto.sourceId == pathDto.destinationId) {
+            throw new InvalidPathException(Constants.INVALID_PATH);
+        }
+
+        Optional<Station> source = stationConfiguration.findStationById(pathDto.sourceId);
+        Optional<Station> destination = stationConfiguration.findStationById(pathDto.destinationId);
+
         if (source.isPresent() && destination.isPresent()) {
-            if (source.get() == destination.get()) {
-                throw new InvalidPathException(Constants.INVALID_PATH);
-            }
             Path path = new Path(pathDto.pathId, source.get(), destination.get(), pathDto.cost);
             pathConfiguration.addPath(path);
             return ResponseEntity.ok().build();
@@ -56,7 +58,7 @@ public class PathController {
         ArrayList<Station> stations = stationConfiguration.getStations();
         ArrayList<Path> paths = pathConfiguration.getPaths();
 
-        if (source.isPresent() || destination.isPresent()) {
+        if (source.isPresent() && destination.isPresent()) {
             Graph graph = new Graph(stations, paths);
             DijkstraHelper dijkstraHelper = new DijkstraHelper(graph);
             dijkstraHelper.execute(source.get(), destination.get());
