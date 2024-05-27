@@ -56,7 +56,6 @@ public class PathControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-
         assertEquals(200, mvcResult.getResponse().getStatus());
     }
 
@@ -74,11 +73,9 @@ public class PathControllerIntegrationTest {
 
     @Test
     public void invalidPath_sameSourceAndDestination() throws Exception {
-        // Given
         PathDto pathDto = new PathDto(1L, 1L, 1L, 2);
         String requestBody = objectMapper.writeValueAsString(pathDto);
 
-        // When
         mockMvc.perform(post(TestConstants.PATHS_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))

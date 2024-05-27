@@ -21,7 +21,4 @@ public class Graph {
     public List<Path> getEdges() {
         return edges;
     }
-
-
-
 }
